@@ -1,0 +1,112 @@
+import React, { useState } from 'react';
+import logo from './20944445.jpg';
+import { Link } from 'react-router-dom';
+
+const Login = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+
+  const [errors, setErrors] = useState({});
+  const [loginError, setLoginError] = useState('');
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const { email, password } = formData;
+    const newErrors = {};
+
+    if (!email.trim()) {
+      newErrors.email = 'Email is required';
+    } else {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        newErrors.email = 'Invalid email format';
+      }
+    }
+
+    if (!password.trim()) {
+      newErrors.password = 'Password is required';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Get stored user from localStorage
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+
+    if (
+      !storedUser ||
+      storedUser.email !== email ||
+      storedUser.password !== password
+    ) {
+      setLoginError('Invalid email or password');
+      return;
+    }
+
+    setLoginError('');
+    alert('Login Successful!');
+
+    // Optional: clear form or redirect
+    setFormData({ email: '', password: '' });
+  };
+
+  return (
+    <div className="login-main-div">
+      <div className="grid-column-one">
+        <img src={logo} alt="user login" />
+      </div>
+      <div className="grid-column-two">
+        <form onSubmit={handleSubmit}>
+          <h2>Welcome Back!</h2>
+          <p>Don't have an account yet? <span><Link to="/">Sign Up</Link></span></p>
+
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          {errors.email && <p className="error">{errors.email}</p>}
+
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          {errors.password && <p className="error">{errors.password}</p>}
+
+          <div>
+            <input type="checkbox" />
+            <span>Keep me logged in</span>
+            <span style={{ float: 'right' }}>Forgot Password?</span>
+          </div>
+
+          {loginError && <p className="error">{loginError}</p>}
+
+          <div className="form-btn">
+            <button type="submit">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
