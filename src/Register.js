@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import logo from './20944445.jpg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +10,7 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate(); // 👈 for navigation after registration
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,6 +55,9 @@ const Register = () => {
     alert('Registered Successfully!');
     console.log('User registered:', formData);
 
+    // Navigate to login page
+    navigate('/login');
+
     // Optional reset form
     setFormData({ name: '', email: '', password: '' });
   };
@@ -66,7 +70,9 @@ const Register = () => {
       <div className="grid-column-two">
         <form onSubmit={handleSubmit}>
           <h2>Welcome Back!</h2>
-          <p>Already have an account yet?<span> <Link to="/login">Sign In</Link></span></p>
+          <p>Already have an account yet?
+            <span><Link to="/login"> Sign In</Link></span>
+          </p>
 
           <label htmlFor="name">Name</label>
           <input

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import logo from './20944445.jpg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // 👈 Add useNavigate
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +10,8 @@ const Login = () => {
 
   const [errors, setErrors] = useState({});
   const [loginError, setLoginError] = useState('');
+
+  const navigate = useNavigate(); // 👈 Initialize navigate
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,7 +60,13 @@ const Login = () => {
     setLoginError('');
     alert('Login Successful!');
 
-    // Optional: clear form or redirect
+    // Save login status to localStorage
+    localStorage.setItem('isLoggedIn', 'true');
+
+    // Redirect to dashboard
+    navigate('/dashboard');
+
+    // Clear form
     setFormData({ email: '', password: '' });
   };
 

@@ -68,6 +68,30 @@ cursor: pointer;
   font-size: 0.875rem;
   margin-top: 4px;
 }
-link{
+a {
   color: white;
+  text-decoration: underline;
+}
+
+/* 🔻 Responsive Section */
+@media (max-width: 768px) {
+  .login-main-div {
+    grid-template-columns: 1fr;
+    width: 90%;
+    margin: 2rem 1rem;
+    padding: 1rem;
+  }
+
+  .grid-column-one {
+    display: none;
+  }
+
+  .form-btn button {
+    width: 100%;
+  }
+
+  .grid-column-two {
+    border-radius: 10px;
+    padding: 1rem;
+  }
 }
