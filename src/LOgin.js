@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import logo from './20944445.jpg';
 import { Link, useNavigate } from 'react-router-dom'; // 👈 Add useNavigate
+import { toast, ToastContainer } from 'react-toastify';
+import axios from 'axios';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -21,12 +23,12 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const { email, password } = formData;
     const newErrors = {};
-
+  
     if (!email.trim()) {
       newErrors.email = 'Email is required';
     } else {
@@ -35,43 +37,45 @@ const Login = () => {
         newErrors.email = 'Invalid email format';
       }
     }
-
+  
     if (!password.trim()) {
       newErrors.password = 'Password is required';
     }
-
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
-    // Get stored user from localStorage
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-
-    if (
-      !storedUser ||
-      storedUser.email !== email ||
-      storedUser.password !== password
-    ) {
-      setLoginError('Invalid email or password');
-      return;
+  
+    try {
+      const res = await axios.post('http://localhost:5000/api/auth/login', {
+        email,
+        password,
+      });
+  
+      toast.success(res.data.message || 'Login successful!');
+  
+      // Save login token/status if needed
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('user', JSON.stringify(res.data.user)); // if needed
+  
+      // Navigate to dashboard
+      navigate('/dashboard');
+  
+      // Clear form
+      setFormData({ email: '', password: '' });
+      setErrors({});
+      setLoginError('');
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Invalid email or password';
+      setLoginError(msg);
+      toast.error(msg);
     }
-
-    setLoginError('');
-    alert('Login Successful!');
-
-    // Save login status to localStorage
-    localStorage.setItem('isLoggedIn', 'true');
-
-    // Redirect to dashboard
-    navigate('/dashboard');
-
-    // Clear form
-    setFormData({ email: '', password: '' });
   };
 
   return (
     <div className="login-main-div">
+      <ToastContainer/>
       <div className="grid-column-one">
         <img src={logo} alt="user login" />
       </div>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import logo from './20944445.jpg';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -21,21 +23,19 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { name, email, password } = formData;
     const newErrors = {};
 
     if (!name.trim()) newErrors.name = 'Name is required';
-
     if (!email.trim()) {
       newErrors.email = 'Email is required';
     } else {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) newErrors.email = 'Enter a valid email';
     }
-
     if (!password.trim()) {
       newErrors.password = 'Password is required';
     } else if (password.length < 6) {
@@ -47,23 +47,31 @@ const Register = () => {
       return;
     }
 
-    // Clear previous errors
-    setErrors({});
+    setErrors({}); // Clear previous errors
 
-    // Save to localStorage
-    localStorage.setItem('user', JSON.stringify(formData));
-    alert('Registered Successfully!');
-    console.log('User registered:', formData);
+    try {
+      // Sending data to the backend API
+      const res = await axios.post('http://localhost:5000/api/auth/register', formData);
+      
+      // If registration is successful
+      toast.success(res.data.message || 'Registered successfully!');
+      
+      // Navigate to login page
+      navigate('/login');
+      
+      // Reset form after successful registration
+      setFormData({ name: '', email: '', password: '' });
 
-    // Navigate to login page
-    navigate('/login');
-
-    // Optional reset form
-    setFormData({ name: '', email: '', password: '' });
+    } catch (err) {
+      // Handling error response
+      const msg = err.response?.data?.message || 'Something went wrong';
+      toast.error(msg);
+    }
   };
 
   return (
     <div className="login-main-div">
+      <ToastContainer/>
       <div className="grid-column-one">
         <img src={logo} alt="user login" />
       </div>

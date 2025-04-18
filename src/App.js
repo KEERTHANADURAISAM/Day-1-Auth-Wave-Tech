@@ -6,7 +6,8 @@ import Register from './Register';
 import Dashboard from './Dashboard';
 import ProtectedRoute from './ProtectedRoute'; // 👈 Import this
 import Logout from './Logout';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {
@@ -28,6 +29,8 @@ function App() {
           }
         />
       </Routes>
+          {/* Toast container should be outside Routes */}
+          <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
 }
