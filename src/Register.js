@@ -51,7 +51,7 @@ const Register = () => {
 
     try {
       // Sending data to the backend API
-      const res = await axios.post('http://localhost:5000/api/auth/register', formData);
+      const res = await axios.post('https://wave-tech-auth-server.vercel.app/api/auth/register', formData);
       
       // If registration is successful
       toast.success(res.data.message || 'Registered successfully!');
