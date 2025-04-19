@@ -14,6 +14,7 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate(); // 👈 for navigation after registration
 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -55,7 +56,11 @@ const Register = () => {
       
       // If registration is successful
       toast.success(res.data.message || 'Registered successfully!');
-      
+
+      // Save user data to localStorage (Optional: Store the token as well if needed)
+      localStorage.setItem('user', JSON.stringify({ name, email })); // You can add more fields here as necessary
+      localStorage.setItem('token', res.data.token); // Save the JWT token if needed
+
       // Navigate to login page
       navigate('/login');
       
